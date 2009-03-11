@@ -48,7 +48,7 @@ void gb_dealloc(geoffrey *g) {
     prev = g->signals;
     while (ptr != NULL) {
         ptr = prev->next;
-        free(prev->message);
+        if (prev->message != NULL) free(prev->message);
         free(prev);
     }
     
@@ -63,8 +63,12 @@ void gb_dealloc(geoffrey *g) {
 void gb_registerSignal(geoffrey *g, char *message, gb_callback *handler) {
     gb_signal *s = malloc(sizeof(struct gb_signal_struct));
     
-    s->message = malloc(strlen(message)+1);
-    strcpy(s->message, message);
+    if (message != NULL) {
+        s->message = malloc(strlen(message)+1);
+        strcpy(s->message, message);
+    } else {
+        s->message = NULL;
+    }
     
     s->callback = handler;
     
@@ -86,7 +90,7 @@ void gb_unregisterSignal(geoffrey *g, gb_callback *handler) {
                 prev->next = NULL;
             }
             
-            free(ptr->message);
+            if (ptr->message != NULL) free(ptr->message);
             free(ptr);
         }
     }
@@ -95,7 +99,7 @@ void gb_unregisterSignal(geoffrey *g, gb_callback *handler) {
 void gb_runSignal(geoffrey *g, char *message, void *data) {
     gb_signal *ptr;
     for (ptr = g->signals; ptr != NULL; ptr = ptr->next) {
-        if (strcasecmp(ptr->message, message) == 0) {
+        if (ptr->message == NULL || strcasecmp(ptr->message, message) == 0) {
             if (ptr->callback != NULL) {
                 ptr->callback(g, message, data);
             }

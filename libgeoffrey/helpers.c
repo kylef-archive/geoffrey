@@ -59,8 +59,6 @@ void gb_registerHelpers(geoffrey *g, int debug) {
     gb_registerSignal(g, GB_LINE_SIG, (gb_callback*)gb_lineSignal);
     
     if (debug) {
-        gb_registerSignal(g, GB_LINE_SIG, (gb_callback*)gb_debugSignal);
-        gb_registerSignal(g, GB_CONN_SIG, (gb_callback*)gb_debugSignal);
-        gb_registerSignal(g, GB_DCONN_SIG, (gb_callback*)gb_debugSignal);
+        gb_registerSignal(g, NULL, (gb_callback*)gb_debugSignal);
     }
 }
