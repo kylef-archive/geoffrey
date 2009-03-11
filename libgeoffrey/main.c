@@ -43,7 +43,15 @@ void gb_finalize(geoffrey *g) {
 }
 
 void gb_dealloc(geoffrey *g) {
-    /* todo - unregister all signals */
+    /* unregister all signals */
+    gb_signal *ptr, *prev;
+    prev = g->signals;
+    while (ptr != NULL) {
+        ptr = prev->next;
+        free(prev->message);
+        free(prev);
+    }
+    
     free(g->host);
     free(g->nick);
     free(g->realname);
