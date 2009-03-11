@@ -64,6 +64,26 @@ void gb_registerSignal(geoffrey *g, char *message, gb_callback *handler) {
     g->signals = s;
 }
 
+void gb_unregisterSignal(geoffrey *g, gb_callback *handler) {
+    gb_signal *ptr, *prev;
+    for (ptr = g->signals, prev = NULL; ptr != NULL; prev = ptr, ptr = ptr->next) {
+        if (handler == ptr->callback) {
+            if (ptr->next != NULL) {
+                if (prev == NULL) {
+                    g->signals = ptr->next;
+                } else {
+                    prev->next = ptr->next;
+                }
+            } else {
+                prev->next = NULL;
+            }
+            
+            free(ptr->message);
+            free(ptr);
+        }
+    }
+}
+
 void gb_runSignal(geoffrey *g, char *message, void *data) {
     gb_signal *ptr;
     for (ptr = g->signals; ptr != NULL; ptr = ptr->next) {

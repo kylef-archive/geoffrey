@@ -31,6 +31,7 @@ int gb_init(geoffrey * g, FILE *error, char *host, int port, char *nick, char *r
 void gb_finalize(geoffrey *g);
 void gb_dealloc(geoffrey *g);
 void gb_registerSignal(geoffrey *g, char *message, gb_callback *hander);
+void gb_unregisterSignal(geoffrey *g, gb_callback *handler);
 void gb_runSignal(geoffrey *g, char *message, void *data);
 int gb_connect(geoffrey *g);
 void gb_loop(geoffrey *g, int reconnect);
