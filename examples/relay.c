@@ -2,7 +2,9 @@
 
 void authenticated(geoffrey *g, char *message, void *data) {
     /* We have connected to IRC, lets join a channel */
-    gb_sendf(g->sock, "JOIN #%s\r\n", ((char **)g->info)[1]);
+    if (((char **)g->info)[1] != NULL) {
+        gb_sendf(g->sock, "JOIN #%s\r\n", ((char **)g->info)[1]);
+    }
 }
 
 void privmsg(geoffrey *g, char *message, char *data) {
@@ -34,15 +36,18 @@ void privmsg(geoffrey *g, char *message, char *data) {
 }
 
 int main(int argc, char **argv) {
-    if (argc != 6) {
-        fprintf(stderr, "Usage: %s <server> <port> <nick> <relay> <channel>\nNever put # infront of the channel.\n", argv[0]);
+    if (argc <= 5) {
+        fprintf(stderr, "Usage: %s <server> <port> <nick> <relay> [<channel>]\nNever put # infront of the channel.\n", argv[0]);
         return 1;
     }
     
-    /* Check for a 6th argument, which would be a optional channel */
     char *info[2];
     info[0] = argv[4];
-    info[1] = argv[5];
+    
+    /* Check for a 6th argument, which would be a optional channel */
+    if (argc >= 6) {
+        info[1] = argv[5];
+    }
     
     char *host = argv[1];
     int port = atoi(argv[2]);
