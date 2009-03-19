@@ -5,7 +5,27 @@
 
 typedef struct gbb_bot_struct {
     char prefix;
+    
+    char **channels;
+    int channel_count;
+    
+    char *autosend;
 } gbb_bot;
+
+void gbb_authenticated(geoffrey *g, char *message, void *data) {
+    /* We have connected to IRC, lets join the channels */
+    
+    int count;
+    
+    for (count = 0; count < ((gbb_bot *)g->info)->channel_count; count++) {
+        gb_sendf(g->sock, "JOIN %s\r\n", ((gbb_bot *)g->info)->channels[count]);
+    }
+    
+    /* And send any commands required */
+    if (((gbb_bot *)g->info)->autosend != NULL) {
+        gb_sendf(g->sock, ((gbb_bot *)g->info)->autosend);
+    }
+}
 
 /* This function converts a privmsg signal into a command signal */
 void gbb_commandSignal(geoffrey *g, char *message, char *data) {
@@ -29,8 +49,11 @@ void gbb_commandSignal(geoffrey *g, char *message, char *data) {
 }
 
 int main(int argc, char **argv) {
+    int count;
     gbb_bot info;
+    
     info.prefix = '!';
+    info.channel_count = 0;
     
     geoffrey *g = gb_alloc();
     gb_init(g, stderr, "irc.allshells.org", 6667, "bot", "geoffrey bot", &info);
@@ -39,6 +62,11 @@ int main(int argc, char **argv) {
     gb_registerSignal(g, GB_PRIVMSG_SIG, (gb_callback*)gbb_commandSignal);
     
     gb_loop(g, 1);
+    
+    for (count = 0; count < info.channel_count; count++) {
+        free(info.channels[count]);
+    }
+    
     gb_dealloc(g);
     
     return 0;
