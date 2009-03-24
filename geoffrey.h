@@ -35,6 +35,7 @@ void gb_unregisterSignal(geoffrey *g, gb_callback *handler);
 void gb_runSignal(geoffrey *g, char *message, void *data);
 int gb_connect(geoffrey *g);
 void gb_loop(geoffrey *g, int reconnect);
+void gb_nick(geoffrey *g, char *nick);
 char *gb_getnick(char *line);
 char *gb_getmsg(char *line);
 char *gb_getchannel(geoffrey *g, char *line);

@@ -117,6 +117,7 @@ void gb_loop(geoffrey *g, int reconnect) {
             gb_lineParser(g);
             gb_runSignal(g, GB_DCONN_SIG, NULL);
             close(g->sock);
+            g->sock = 0;
         }
         
         if (!reconnect) {
@@ -127,6 +128,19 @@ void gb_loop(geoffrey *g, int reconnect) {
         if (g->alive) {
             sleep(15); /* Wait 15 seconds before reconnecting, unless we're quitting. */
         }
+    }
+}
+
+void gb_nick(geoffrey *g, char *nick) {
+    free(g->nick);
+    
+    if (nick) {
+        g->nick = malloc(strlen(nick) + 1);
+        g->nick = strcpy(g->nick, nick);
+    }
+    
+    if (g->sock != 0) {
+        gb_sendf(g->sock, "NICK %s\r\n", g->nick);
     }
 }
 
