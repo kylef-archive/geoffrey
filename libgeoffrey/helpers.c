@@ -45,10 +45,12 @@ void gb_pingSignal(geoffrey *g, char *message, void *data) {
 
 /* Put the signal into the error file (geoffrey.error). */
 void gb_debugSignal(geoffrey *g, char *message, char *data) {
-    if (data == NULL) {
-        fprintf(g->error, "[signal] (%s)\n", message);
-    } else {
-        fprintf(g->error, "[signal] (%s) %s\n", message, data);
+    if (g->error != NULL) {
+        if (data == NULL) {
+            fprintf(g->error, "[signal] (%s)\n", message);
+        } else {
+            fprintf(g->error, "[signal] (%s) %s\n", message, data);
+        }
     }
 }
 
