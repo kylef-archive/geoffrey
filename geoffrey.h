@@ -21,13 +21,14 @@ typedef struct geoffrey_struct {
     void *info; /* Optional infomation */
     
     /* Logging */
+    int debug;
     FILE *error;
 } geoffrey;
 
 typedef void (gb_callback)(geoffrey *g, char *message, void *data);
 
 geoffrey * gb_alloc(void);
-int gb_init(geoffrey * g, FILE *error, char *host, int port, char *nick, char *realname, void *info);
+int gb_init(geoffrey * g, int debug, FILE *error, char *host, int port, char *nick, char *realname, void *info);
 void gb_finalize(geoffrey *g);
 void gb_dealloc(geoffrey *g);
 void gb_registerSignal(geoffrey *g, char *message, gb_callback *hander);
@@ -56,7 +57,7 @@ typedef struct gb_signal_struct {
 #define GB_AUTHED_SIG "irc.001" /* User Authenticated (not nickserv) */
 
 /* Standard Helpers */
-void gb_registerHelpers(geoffrey *g, int debug);
+void gb_registerHelpers(geoffrey *g);
 
 /* Networking */
 #ifdef WIN32

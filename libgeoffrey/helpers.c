@@ -55,12 +55,12 @@ void gb_debugSignal(geoffrey *g, char *message, char *data) {
 }
 
 /* This function registered the generic helpers, which 90% of the time will be used. */
-void gb_registerHelpers(geoffrey *g, int debug) {
+void gb_registerHelpers(geoffrey *g) {
     gb_registerSignal(g, GB_PING_SIG, gb_pingSignal);
     gb_registerSignal(g, GB_CONN_SIG, gb_connectedSignal);
     gb_registerSignal(g, GB_LINE_SIG, (gb_callback*)gb_lineSignal);
     
-    if (debug) {
+    if (g->debug) {
         gb_registerSignal(g, NULL, (gb_callback*)gb_debugSignal);
     }
 }

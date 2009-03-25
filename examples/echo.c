@@ -38,11 +38,11 @@ int main(int argc, char **argv) {
     
     /* Inititalize geoffrey, passing it, server, port, nick, realname and any
        extra data that is passed to callbacks */
-    gb_init(g, stderr, host, port, nick, "geoffrey echo test", info);
+    gb_init(g, 1, stderr, host, port, nick, "geoffrey echo test", info);
     
     /* Register the default signals (helpers) this is, ping, line ->command,
        connect. The 1 is for debugging, to print every signal. */
-    gb_registerHelpers(g, 1);
+    gb_registerHelpers(g);
     
     /* Register some custom signals */
     gb_registerSignal(g, GB_AUTHED_SIG, authenticated);

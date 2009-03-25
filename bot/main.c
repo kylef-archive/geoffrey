@@ -56,7 +56,7 @@ int main(int argc, char **argv) {
     info.channel_count = 0;
     
     geoffrey *g = gb_alloc();
-    gb_init(g, stderr, "irc.allshells.org", 6667, "bot", "geoffrey bot", &info);
+    gb_init(g, 1, stderr, "irc.allshells.org", 6667, "bot", "geoffrey bot", &info);
     gb_registerHelpers(g, DEBUG);
     
     gb_registerSignal(g, GB_PRIVMSG_SIG, (gb_callback*)gbb_commandSignal);

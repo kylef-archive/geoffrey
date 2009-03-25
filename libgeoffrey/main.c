@@ -4,7 +4,7 @@ geoffrey * gb_alloc(void) {
     return malloc(sizeof(geoffrey));
 }
 
-int gb_init(geoffrey * g, FILE *error, char *host, int port, char *nick, char *realname, void *info) {
+int gb_init(geoffrey * g, int debug, FILE *error, char *host, int port, char *nick, char *realname, void *info) {
     if (g == NULL) {
         return 0;
     }
@@ -26,6 +26,7 @@ int gb_init(geoffrey * g, FILE *error, char *host, int port, char *nick, char *r
         g->realname = strcpy(g->realname, realname);
     }
     
+    g->debug = debug;
     g->error = error;
     g->alive = 0;
     g->port = port;
