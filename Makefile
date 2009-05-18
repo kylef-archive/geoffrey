@@ -11,17 +11,13 @@ ARFLAGS = rcs
 
 all:
 	mkdir -p bin
-	$(CC) $(CFLAGS) $(HEADERS) -c libgeoffrey/net.c -o net.o
-	$(CC) $(CFLAGS) $(HEADERS) -c libgeoffrey/main.c -o main.o
-	$(CC) $(CFLAGS) $(HEADERS) -c libgeoffrey/helpers.c -o helpers.o
+	$(CC) $(CFLAGS) $(HEADERS) -c src/net.c -o net.o
+	$(CC) $(CFLAGS) $(HEADERS) -c src/main.c -o main.o
+	$(CC) $(CFLAGS) $(HEADERS) -c src/helpers.c -o helpers.o
 	$(AR) $(ARFLAGS) libgeoffrey.a main.o net.o helpers.o
 
 clean:
 	rm -rf *.a *.o bin
-
-bot: all
-	$(CC) $(CFLAGS) $(HEADERS) -c bot/main.c -o main.o
-	$(CC) $(CFLAGS) $(LIBS) -o bin/geoffrey main.o $(LIB)
 
 examples: all
 	$(CC) $(CFLAGS) $(HEADERS) -c examples/echo.c -o echo.o

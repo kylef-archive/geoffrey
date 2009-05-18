@@ -87,8 +87,10 @@ void gb_unregisterSignal(geoffrey *g, gb_callback *handler) {
                 } else {
                     prev->next = ptr->next;
                 }
-            } else {
+            } else if (prev != NULL) {
                 prev->next = NULL;
+            } else {
+                g->signals = NULL;
             }
             
             if (ptr->message != NULL) free(ptr->message);
