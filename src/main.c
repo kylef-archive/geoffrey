@@ -8,31 +8,31 @@ int gb_init(geoffrey * g, int debug, FILE *error, char *host, int port, char *ni
     if (g == NULL) {
         return 0;
     }
-    
+
     sock_start();
-    
+
     if (host) {
         g->host = malloc(strlen(host) + 1);
         g->host = strcpy(g->host, host);
     }
-    
+
     if (nick) {
         g->nick = malloc(strlen(nick) + 1);
         g->nick = strcpy(g->nick, nick);
     }
-    
+
     if (realname) {
         g->realname = malloc(strlen(realname) + 1);
         g->realname = strcpy(g->realname, realname);
     }
-    
+
     g->debug = debug;
     g->error = error;
     g->alive = 0;
     g->port = port;
     g->info = info;
     g->signals = NULL;
-    
+
     return 1;
 }
 
@@ -52,27 +52,27 @@ void gb_dealloc(geoffrey *g) {
         if (prev->message != NULL) free(prev->message);
         free(prev);
     }
-    
+
     free(g->host);
     free(g->nick);
     free(g->realname);
     free(g);
-    
+
     sock_stop();
 }
 
 void gb_registerSignal(geoffrey *g, char *message, gb_callback *handler) {
     gb_signal *s = malloc(sizeof(struct gb_signal_struct));
-    
+
     if (message != NULL) {
         s->message = malloc(strlen(message)+1);
         strcpy(s->message, message);
     } else {
         s->message = NULL;
     }
-    
+
     s->callback = handler;
-    
+
     s->next = g->signals;
     g->signals = s;
 }
@@ -92,7 +92,7 @@ void gb_unregisterSignal(geoffrey *g, gb_callback *handler) {
             } else {
                 g->signals = NULL;
             }
-            
+
             if (ptr->message != NULL) free(ptr->message);
             free(ptr);
         }
@@ -113,7 +113,7 @@ void gb_runSignal(geoffrey *g, char *message, void *data) {
 void gb_loop(geoffrey *g, int reconnect) {
     if (g->alive) return;
     g->alive = 1;
-    
+
     while (g->alive) {
         if (gb_connect(g) == GB_NET_CONN) {
             gb_runSignal(g, GB_CONN_SIG, NULL);
@@ -122,12 +122,12 @@ void gb_loop(geoffrey *g, int reconnect) {
             close(g->sock);
             g->sock = 0;
         }
-        
+
         if (!reconnect) {
             g->alive = 0;
             return;
         }
-        
+
         if (g->alive) {
             sleep(15); /* Wait 15 seconds before reconnecting, unless we're quitting. */
         }
@@ -136,12 +136,12 @@ void gb_loop(geoffrey *g, int reconnect) {
 
 void gb_nick(geoffrey *g, char *nick) {
     free(g->nick);
-    
+
     if (nick) {
         g->nick = malloc(strlen(nick) + 1);
         g->nick = strcpy(g->nick, nick);
     }
-    
+
     if (g->sock != 0) {
         gb_sendf(g->sock, "NICK %s\r\n", g->nick);
     }
@@ -150,10 +150,10 @@ void gb_nick(geoffrey *g, char *nick) {
 char *gb_getnick(char *line) {
     int index = strchr(line, '!') - line;
     char *nick = malloc(index);
-    
+
     memcpy(nick, &line[1], index - 1);
     nick[index - 1] = 0;
-    
+
     return nick;
 }
 
@@ -161,10 +161,10 @@ char *gb_getmsg(char *line) {
     int index = (strstr(line, " :") - line) + 2;
     int len = strlen(line) - index;
     char *msg = malloc(len + 1);
-    
+
     memcpy(msg, &line[index], len);
     msg[len] = 0;
-    
+
     return msg;
 }
 
@@ -172,17 +172,17 @@ char *gb_getchannel(geoffrey *g, char *line) {
     char *argv[3];
     char *buf = strdup(line);
     char *channel;
-    
+
     argv[0] = strtok(buf, " ");
     argv[1] = strtok(NULL, " ");
     argv[2] = strtok(NULL, " ");
-    
+
     if (strcmp(argv[2], g->nick) == 0) {
         channel = NULL;
     } else {
         channel = strdup(argv[2]);
     }
-    
+
     free(buf);
     return channel;
 }

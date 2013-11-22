@@ -6,21 +6,21 @@ void gb_lineSignal(geoffrey *g, char *message, char *data) {
     char *argv[2];
     char *m;
     int part;
-    
+
     if (buf == NULL) {
         return;
     }
-    
+
     argv[0] = strtok(buf, " ");
     argv[1] = strtok(NULL, " ");
-    
+
     part = (data[0] == ':');
     m = malloc(strlen(argv[part]) + 5);
     strcpy(m, "irc.");
     strcat(m, argv[part]);
-    
+
     gb_runSignal(g, m, (void*)data);
-    
+
     free(m);
     free(buf);
 }
@@ -35,10 +35,10 @@ void gb_connectedSignal(geoffrey *g, char *message, void *data) {
 void gb_pingSignal(geoffrey *g, char *message, void *data) {
     char *argv[2];
     char *buf = strdup(data);
-    
+
     argv[0] = strtok(buf, " ");
     argv[1] = strtok(NULL, " ");
-    
+
     gb_sendf(g->sock, "PONG %s\r\n", &argv[1][1]);
     free(buf);
 }
@@ -59,7 +59,7 @@ void gb_registerHelpers(geoffrey *g) {
     gb_registerSignal(g, GB_PING_SIG, gb_pingSignal);
     gb_registerSignal(g, GB_CONN_SIG, gb_connectedSignal);
     gb_registerSignal(g, GB_LINE_SIG, (gb_callback*)gb_lineSignal);
-    
+
     if (g->debug) {
         gb_registerSignal(g, NULL, (gb_callback*)gb_debugSignal);
     }

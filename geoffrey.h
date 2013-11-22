@@ -10,16 +10,16 @@ typedef struct geoffrey_struct {
     char *host;
     int port;
     int alive;
-    
+
     /* IRC Data */
     char *nick;
     char *realname;
-    
+
     /* Signals */
     struct gb_signal_struct *signals;
-    
+
     void *info; /* Optional infomation */
-    
+
     /* Logging */
     int debug;
     FILE *error;
