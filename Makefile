@@ -8,21 +8,22 @@ LIB = -lgeoffrey
 AR = ar
 ARFLAGS = rcs
 
+all: libgeoffrey.a
 
-all:
-	mkdir -p bin
-	$(CC) $(CFLAGS) $(HEADERS) -c src/net.c -o net.o
-	$(CC) $(CFLAGS) $(HEADERS) -c src/main.c -o main.o
-	$(CC) $(CFLAGS) $(HEADERS) -c src/helpers.c -o helpers.o
-	$(AR) $(ARFLAGS) libgeoffrey.a main.o net.o helpers.o
+libgeoffrey.a: src/net.o src/main.o src/helpers.o
+	$(AR) $(ARFLAGS) $@ $^
+
+src/%.o: src/%.c
+	$(CC) $(CFLAGS) $(HEADERS) -c $^ -o $@
+
+examples/%.o: examples/%.c
+	$(CC) $(CFLAGS) $(HEADERS) -c $^ -o $@
+
+bin/%: examples/%.o libgeoffrey.a
+	@mkdir -p bin
+	$(CC) $(CFLAGS) $^ -o $@
+
+examples: bin/echo bin/logger bin/relay
 
 clean:
-	rm -rf *.a *.o bin
-
-examples: all
-	$(CC) $(CFLAGS) $(HEADERS) -c examples/echo.c -o echo.o
-	$(CC) $(CFLAGS) $(HEADERS) -c examples/logger.c -o logger.o
-	$(CC) $(CFLAGS) $(HEADERS) -c examples/relay.c -o relay.o
-	$(CC) $(CFLAGS) $(LIBS) -o bin/echo echo.o $(LIB)
-	$(CC) $(CFLAGS) $(LIBS) -o bin/logger logger.o $(LIB)
-	$(CC) $(CFLAGS) $(LIBS) -o bin/relay relay.o $(LIB)
+	rm -rf *.a src/*.o examples/*.o bin
