@@ -1,8 +1,9 @@
 #include <string.h>
 #include <geoffrey.h>
+#include "message.h"
 
 /* This function turns a line signal into a IRC Command signals. */
-void gb_lineSignal(geoffrey *g, char *message, char *data) {
+void gb_lineSignal(geoffrey *g, char *signal, char *data) {
     char *buf = strdup(data);
     char *argv[2];
     char *m;
@@ -12,18 +13,18 @@ void gb_lineSignal(geoffrey *g, char *message, char *data) {
         return;
     }
 
-    argv[0] = strtok(buf, " ");
-    argv[1] = strtok(NULL, " ");
+    Message *message = message_parse(data);
+    const char *command = message_get_command(message);
 
-    part = (data[0] == ':');
-    m = malloc(strlen(argv[part]) + 5);
+    m = malloc(strlen(command) + 5);
     strcpy(m, "irc.");
-    strcat(m, argv[part]);
+    strcat(m, command);
 
     gb_runSignal(g, m, (void*)data);
 
     free(m);
     free(buf);
+    message_dealloc(message);
 }
 
 /* This function sends USER and NICK, this should be done once we're connected. */
