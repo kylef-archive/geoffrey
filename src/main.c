@@ -1,7 +1,8 @@
+#include <string.h>
 #include <geoffrey.h>
 
 geoffrey * gb_alloc(void) {
-    return malloc(sizeof(geoffrey));
+    return calloc(1, sizeof(geoffrey));
 }
 
 int gb_init(geoffrey * g, int debug, FILE *error, char *host, int port, char *nick, char *realname, void *info) {
@@ -12,18 +13,15 @@ int gb_init(geoffrey * g, int debug, FILE *error, char *host, int port, char *ni
     sock_start();
 
     if (host) {
-        g->host = malloc(strlen(host) + 1);
-        g->host = strcpy(g->host, host);
+        g->host = strdup(host);
     }
 
     if (nick) {
-        g->nick = malloc(strlen(nick) + 1);
-        g->nick = strcpy(g->nick, nick);
+        g->nick = strdup(nick);
     }
 
     if (realname) {
-        g->realname = malloc(strlen(realname) + 1);
-        g->realname = strcpy(g->realname, realname);
+        g->realname = strdup(realname);
     }
 
     g->debug = debug;
@@ -45,12 +43,11 @@ void gb_finalize(geoffrey *g) {
 
 void gb_dealloc(geoffrey *g) {
     /* unregister all signals */
-    gb_signal *ptr, *prev;
-    prev = g->signals;
+    gb_signal *ptr = g->signals;
     while (ptr != NULL) {
-        ptr = prev->next;
-        if (prev->message != NULL) free(prev->message);
-        free(prev);
+        gb_signal *next = ptr->next;
+        free(ptr);
+        ptr = next;
     }
 
     free(g->host);
@@ -62,11 +59,10 @@ void gb_dealloc(geoffrey *g) {
 }
 
 void gb_registerSignal(geoffrey *g, char *message, gb_callback *handler) {
-    gb_signal *s = malloc(sizeof(struct gb_signal_struct));
+    gb_signal *s = calloc(1, sizeof(struct gb_signal_struct));
 
     if (message != NULL) {
-        s->message = malloc(strlen(message)+1);
-        strcpy(s->message, message);
+        s->message = strdup(message);
     } else {
         s->message = NULL;
     }
