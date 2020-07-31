@@ -72,6 +72,7 @@ void gb_registerHelpers(geoffrey *g);
     #include <arpa/inet.h>
     #include <netdb.h>
     #include <sys/select.h>
+    #include <unistd.h>
     #define closesocket(x) close((x))
     #define sock_start()
     #define sock_stop()

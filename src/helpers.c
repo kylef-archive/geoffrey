@@ -1,3 +1,4 @@
+#include <string.h>
 #include <geoffrey.h>
 
 /* This function turns a line signal into a IRC Command signals. */
