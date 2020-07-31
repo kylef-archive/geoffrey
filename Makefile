@@ -13,7 +13,7 @@ all: libgeoffrey.a
 test: runtests
 	@./runtests
 
-runtests: libgeoffrey.a tests/main.o tests/test_message.o
+runtests: libgeoffrey.a tests/main.o tests/test_message.o tests/test_helpers.o
 	$(CC) -g $(CFLAGS) -Wl,--start-group $^ -Wl,--end-group -o $@
 
 libgeoffrey.a: src/net.o src/main.o src/helpers.o src/message.o
